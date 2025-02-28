@@ -1,0 +1,109 @@
+<!-- home.html -->
+{% extends 'base.html' %}
+{% comment %} {% load static %} {% endcomment %}
+
+{% block title %}Medical Appointment System - Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        /*background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{% static "images/hero-background.jpg" %}');*/
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 6rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .feature-card {
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        height: 100%;
+        transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #0d6efd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Modern Healthcare Appointment System</h1>
+        <p class="lead mb-4">Connecting patients with healthcare professionals for better care management</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{% url 'patient_register' %}" class="btn btn-primary btn-lg px-4 gap-3">Register as Patient</a>
+            <a href="{% url 'doctor_register' %}" class="btn btn-outline-light btn-lg px-4">Register as Doctor</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container py-5">
+    <h2 class="text-center mb-5">Our Features</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <h3>Easy Scheduling</h3>
+                <p>Book appointments with your preferred healthcare provider with just a few clicks.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-bell"></i>
+                </div>
+                <h3>Appointment Reminders</h3>
+                <p>Receive notifications and reminders about your upcoming appointments.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+                <h3>Secure Communication</h3>
+                <p>Communicate directly with your healthcare provider through our secure messaging system.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">What Our Users Say</h2>
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="card-text">"This platform has revolutionized how I manage my medical appointments. The interface is intuitive and saves me so much time."</p>
+                        <p class="card-text"><small class="text-muted">— Sarah Johnson, Patient</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="card-text">"As a physician, this system has helped me organize my schedule more efficiently. My patients appreciate the streamlined process."</p>
+                        <p class="card-text"><small class="text-muted">— Dr. Michael Chen, Cardiologist</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,295 @@
+<!-- patient_dashboard.html -->
+{% extends 'base.html' %}
+{% comment %} {% load static %} {% endcomment %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+<style>
+    .dashboard-card {
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .sidebar {
+        border-right: 1px solid #e9ecef;
+        height: calc(100vh - 76px);
+        position: sticky;
+        top: 76px;
+    }
+    
+    .appointment-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .status-confirmed {
+        color: #198754;
+    }
+    
+    .status-pending {
+        color: #fd7e14;
+    }
+    
+    .status-cancelled {
+        color: #dc3545;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 d-none d-md-block sidebar py-3">
+            <div class="profile-image text-center mb-4">
+                {% comment %} <img src="{% static 'images/default-profile.png' %}" alt="Profile Image" class="rounded-circle" width="100" height="100"> {% endcomment %}
+                <h5 class="mt-2">{{ user.get_full_name }}</h5>
+                <p class="text-muted">Patient</p>
+            </div>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-check me-2"></i> My Appointments
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-plus-circle me-2"></i> Book Appointment
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-file-medical me-2"></i> Medical History
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-chat-dots me-2"></i> Messages
+                    <span class="badge bg-primary rounded-pill float-end">3</span>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-person me-2"></i> Profile Settings
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="col-lg-9 col-md-8 col-12 py-3">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <h2>Welcome, {{ user.first_name }}!</h2>
+                <p>Your health journey at a glance</p>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="dashboard-card card border-left-primary h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Upcoming Appointments</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ upcoming_appointments_count }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bi bi-calendar-check fs-2 text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="dashboard-card card border-left-success h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Completed Visits</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ completed_appointments_count }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bi bi-check-circle fs-2 text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="dashboard-card card border-left-info h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Prescriptions</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prescriptions_count }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bi bi-capsule fs-2 text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="dashboard-card card border-left-warning h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Unread Messages</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ unread_messages_count }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bi bi-envelope fs-2 text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Appointments -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Upcoming Appointments</h6>
+                            <a href="" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i> Book New
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="appointment-list">
+                                {% if upcoming_appointments %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date & Time</th>
+                                                    <th>Doctor</th>
+                                                    <th>Purpose</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for appointment in upcoming_appointments %}
+                                                <tr>
+                                                    <td>{{ appointment.date_time|date:"M d, Y" }} at {{ appointment.date_time|date:"h:i A" }}</td>
+                                                    <td>Dr. {{ appointment.doctor.user.last_name }}</td>
+                                                    <td>{{ appointment.purpose }}</td>
+                                                    <td>
+                                                        {% if appointment.status == 'confirmed' %}
+                                                            <span class="status-confirmed">
+                                                                <i class="bi bi-check-circle me-1"></i> Confirmed
+                                                            </span>
+                                                        {% elif appointment.status == 'pending' %}
+                                                            <span class="status-pending">
+                                                                <i class="bi bi-clock me-1"></i> Pending
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="status-cancelled">
+                                                                <i class="bi bi-x-circle me-1"></i> Cancelled
+                                                            </span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="" class="btn btn-sm btn-info">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        {% if appointment.status != 'cancelled' %}
+                                                        <a href="}" class="btn btn-sm btn-danger">
+                                                            <i class="bi bi-x"></i>
+                                                        </a>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                                        <p class="mt-3">No upcoming appointments. Book a new appointment to get started.</p>
+                                        <a href="" class="btn btn-primary">
+                                            Book Appointment
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity & Medical Reminders -->
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                {% for activity in recent_activities %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ activity.title }}</h6>
+                                        <small>{{ activity.timestamp|timesince }} ago</small>
+                                    </div>
+                                    <p class="mb-1">{{ activity.description }}</p>
+                                </div>
+                                {% empty %}
+                                <div class="text-center py-4">
+                                    <p class="text-muted">No recent activity to display.</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Medical Reminders</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                {% for reminder in medical_reminders %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ reminder.title }}</h6>
+                                        <small>{{ reminder.due_date|date:"M d, Y" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ reminder.description }}</p>
+                                </div>
+                                {% empty %}
+                                <div class="text-center py-4">
+                                    <p class="text-muted">No medical reminders to display.</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
