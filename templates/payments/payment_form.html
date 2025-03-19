@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay for Appointment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <h1>Pay for Appointment #{{ appointment.id }}</h1>
+    <form id="payment-form">
+        <div id="card-element"></div>
+        <button type="submit">Pay $50</button>
+        <div id="error-message"></div>
+    </form>
+
+    <script>
+        var stripe = Stripe('{{ stripe_publishable_key }}');
+        var elements = stripe.elements();
+        var card = elements.create('card');
+        card.mount('#card-element');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    document.getElementById('error-message').textContent = result.error.message;
+                } else {
+                    fetch('/payments/api/payments/process/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + getToken(), // Assume JWT token from client
+                        },
+                        body: JSON.stringify({
+                            appointment_id: {{ appointment.id }},
+                            stripe_token: result.token.id
+                        })
+                    }).then(response => response.json()).then(data => {
+                        if (data.error) {
+                            document.getElementById('error-message').textContent = data.error;
+                        } else {
+                            alert('Payment successful!');
+                            window.location.href = '/dashboard/';
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

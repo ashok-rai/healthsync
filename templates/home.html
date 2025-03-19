@@ -1,13 +1,13 @@
 <!-- home.html -->
 {% extends 'base.html' %}
-{% comment %} {% load static %} {% endcomment %}
+{% load static %}
 
 {% block title %}Medical Appointment System - Home{% endblock %}
 
 {% block extra_css %}
 <style>
     .hero-section {
-        /*background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{% static "images/hero-background.jpg" %}');*/
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{% static "images/hero-background.svg" %}');
         background-size: cover;
         background-position: center;
         color: white;
@@ -42,8 +42,8 @@
         <h1 class="display-4 fw-bold">Modern Healthcare Appointment System</h1>
         <p class="lead mb-4">Connecting patients with healthcare professionals for better care management</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a href="{% url 'patient_register' %}" class="btn btn-primary btn-lg px-4 gap-3">Register as Patient</a>
-            <a href="{% url 'doctor_register' %}" class="btn btn-outline-light btn-lg px-4">Register as Doctor</a>
+            <a href="#" class="btn btn-primary btn-lg px-4 gap-3">Register as Patient</a>
+            <a href="#" class="btn btn-outline-light btn-lg px-4">Register as Doctor</a>
         </div>
     </div>
 </section>
